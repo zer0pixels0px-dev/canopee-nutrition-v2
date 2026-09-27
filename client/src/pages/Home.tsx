@@ -40,6 +40,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { isWikiKnowledgeSources, type WikiKnowledgeSource } from "@shared/wiki-knowledge";
+import { PRODUCT_DESCRIPTIONS } from "@shared/product-descriptions";
 import { MAX_DIAGNOSTIC_IMAGE_DATA_URL_LENGTH } from "@shared/botany-assistant";
 import type { ManufacturerProductCandidate, ManufacturerSearchResult } from "@shared/manufacturer-search";
 
@@ -219,7 +220,6 @@ const PRODUCT_REFERENCES: Partial<Record<string, Pick<Product, "imageUrl" | "sou
   "an-overdrive": { imageUrl: "https://www.advancednutrients.com/wp-content/uploads/2021/10/overdrive-1200x630-1.jpg", sourceUrl: "https://www.advancednutrients.com/products/overdrive/", sourceVerified: true },
   "an-flawless-finish": { imageUrl: "https://www.advancednutrients.com/wp-content/uploads/2021/10/flawless-finish-1200x630-1.jpg", sourceUrl: "https://www.advancednutrients.com/products/flawless-finish/", sourceVerified: true },
 };
-
 const CATALOG: Product[] = ([
   { id: "bb-grow", name: "Bio·Grow", brand: "BioBizz", range: "BioBizz · Organics", role: "Base croissance", unit: "ml", color: "#9aad78", description: "Base organique pour soutenir la croissance et le feuillage." },
   { id: "bb-bloom", name: "Bio·Bloom", brand: "BioBizz", range: "BioBizz · Organics", role: "Base floraison", unit: "ml", color: "#c5a574", description: "Formule de floraison à monter progressivement." },
@@ -257,7 +257,11 @@ const CATALOG: Product[] = ([
   { id: "an-overdrive", name: "Overdrive", brand: "Advanced Nutrients", range: "Advanced Nutrients · pH Perfect", role: "Maturation", unit: "ml", color: "#bf8768", description: "Dosages par semaine vérifiés dans le tableau Sensi Master Recipe Global." },
   { id: "an-flawless-finish", name: "Flawless Finish", brand: "Advanced Nutrients", range: "Advanced Nutrients · pH Perfect", role: "Rinçage", unit: "ml", color: "#84a0aa", description: "Inclusion et dose de rinçage vérifiées dans le tableau Sensi Master Recipe Global." },
   { id: "custom-calmag", name: "CalMag", brand: "Générique", range: "Compléments", role: "Calcium / magnésium", unit: "ml", color: "#7aa5a7", description: "Complément calcium et magnésium pour eau douce ou osmosée." },
-] satisfies Product[]).map((product) => ({ ...product, ...PRODUCT_REFERENCES[product.id] }));
+] satisfies Product[]).map((product) => ({
+  ...product,
+  description: PRODUCT_DESCRIPTIONS[product.id] ?? product.description,
+  ...PRODUCT_REFERENCES[product.id],
+}));
 
 function withCatalogReferences(product: TableProduct): TableProduct {
   const reference = CATALOG.find((item) => item.id === product.id);
@@ -2451,7 +2455,7 @@ export default function Home() {
             {selectedProductDetails.sourceVerified && <Badge className="mt-2 bg-primary/10 text-primary">Fiche fabricant vérifiée</Badge>}
           </div>
         </div>
-        <p className="text-sm leading-relaxed text-muted">{selectedProductDetails.description}</p>
+        <p className="whitespace-pre-line text-sm leading-relaxed text-muted">{selectedProductDetails.description}</p>
         <div className="flex flex-wrap gap-1.5">{getProductCategories(selectedProductDetails).map((category) => <Badge key={category} className="bg-primary/10 text-primary">{category === "pk-booster" ? "Booster PK · teneur exacte à vérifier" : PRODUCT_CATEGORY_LABELS[category]}</Badge>)}</div>
         <div className="rounded-xl border border-border/70 bg-elevated/50 p-4"><p className="text-xs font-medium">Mode d’emploi — repères prudents</p><p className="mt-2 text-xs leading-relaxed text-muted">{selectedProductDetails.application || getProductUsage(selectedProductDetails)}</p><p className="mt-2 text-[10px] leading-relaxed text-subtle">Toujours suivre l’étiquette et le tableau officiels correspondant au produit et au support. Ne combinez pas des dosages provenant de tableaux différents.</p></div>
         {selectedProductDetails.nutrientProfile && <div className="rounded-xl bg-elevated p-3 text-xs text-muted"><span className="font-medium text-fg">Profil nutritif publié :</span> {selectedProductDetails.nutrientProfile}</div>}
