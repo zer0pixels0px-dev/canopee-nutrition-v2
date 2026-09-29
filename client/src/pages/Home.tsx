@@ -280,6 +280,7 @@ type OfficialChartDefinition = {
 };
 
 const BIOBIZZ_STAGES = ["Propagation", "Veg", "Flo 1", "Flo 2", "Flo 3", "Flo 4", "Flo 5", "Flo 6", "Flo 7", "Flo 8", "Wash", "Harvest"];
+const BLACK_NUTRIENTS_STAGES = ["Veg 1", "Veg 2", "Veg 3", "Veg 4", "Flo 1", "Flo 2", "Flo 3", "Flo 4", "Flo 5", "Flo 6", "Flo 7", "Wash", "Harvest"];
 const CANNA_STAGES = ["Root D1-5", "Veg D6-25", "Gen I W1", "Gen I W2", "Gen II W3", "Gen II W4", "Gen II W5", "Gen II W6", "Gen III W7", "Gen IV W8", "W9", "Flush"];
 const ADVANCED_NUTRIENTS_STAGES = ["Grow W1", "Grow W2", "Grow W3", "Grow W4", "Bloom W1", "Bloom W2", "Bloom W3", "Bloom W4", "Bloom W5", "Bloom W6", "Bloom W7", "Flush"];
 
@@ -327,6 +328,15 @@ const OFFICIAL_CHARTS: Record<string, OfficialChartDefinition> = {
       "an-bud-ignitor": [0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0],
       "an-overdrive": [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0],
       "an-flawless-finish": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    },
+  },
+  "black-flower-global": {
+    stages: BLACK_NUTRIENTS_STAGES,
+    doses: {
+      // Doses en ml/L (13 étapes = BLACK_NUTRIENTS_STAGES). Clés manuelles conservées.
+      "manual-1790429633381": [0, 0, 0, 0, 0.2, 0.2, 0.4, 0.4, 0.4, 0.4, 0.2, 0, 0],
+      "manual-1790429680927": [0.3, 0.3, 0.3, 0.3, 0.6, 0.6, 0.6, 0.6, 0.3, 0, 0, 0, 0],
+      "manual-1790429586865": [0.5, 0.5, 1, 1, 1.25, 1.5, 1.75, 1.75, 1.75, 1.75, 1.5, 0, 0],
     },
   },
 };
@@ -404,6 +414,24 @@ const DEFAULT_TABLES: NutritionTable[] = [
     products: CATALOG.filter((product) => OFFICIAL_CHARTS["advanced-sensi-global"].doses[product.id] !== undefined).map((product) => ({
       ...product,
       doses: OFFICIAL_CHARTS["advanced-sensi-global"].doses[product.id] ?? ADVANCED_NUTRIENTS_STAGES.map(() => 0),
+      enabled: true,
+    })),
+  },
+  {
+    id: "black-flower-research",
+    name: "Black Flower Research Recipe",
+    brand: "Black Flower Research",
+    medium: "Recette Global",
+    description: "Recette Black Flower Research. Les doses sont en ml/L selon le tableau associé (black-flower-global).",
+    weeks: BLACK_NUTRIENTS_STAGES,
+    weekPhases: ["vegetative", "vegetative", "vegetative", "vegetative", "flowering", "flowering", "flowering", "flowering", "flowering", "flowering", "flowering", "flush", "other"],
+    chartId: "black-flower-global",
+    chartSourceUrl: undefined,
+    chartNotes: "Tableau Black Flower Research, doses en ml/L. Produits manuels (ids manual-*). Vérifiez les dosages sur la source fabricant avant utilisation.",
+    chartStageKeys: BLACK_NUTRIENTS_STAGES,
+    products: CATALOG.filter((product) => OFFICIAL_CHARTS["black-flower-global"].doses[product.id] !== undefined).map((product) => ({
+      ...product,
+      doses: OFFICIAL_CHARTS["black-flower-global"].doses[product.id] ?? BLACK_NUTRIENTS_STAGES.map(() => 0),
       enabled: true,
     })),
   },
